@@ -108,11 +108,21 @@ if (form) {
         e.preventDefault();
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
+		const webhookUrl = 'https://automations.wolfoncloud.com/webhook/501030c6-f9d3-41e9-adfb-45c8cb66cfc1';
         
         // Basic validation
         const nome = form.querySelector('#nome').value.trim();
         const email = form.querySelector('#email').value.trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		const telefono = form.querySelector('#telefono').value.trim();
+		const periodo = form.querySelector('#periodo').value.trim();
+		const adulti = form.querySelector('#adulti').value;
+		const bambini = form.querySelector('#bambini').value;
+		const budget = form.querySelector('#budget').value;
+		const note = form.querySelector('#note').value.trim();
+		const whatsapp = !!form.querySelector('#whatsapp') && form.querySelector('#whatsapp').checked;
+		const privacy = !!form.querySelector('#privacy') && form.querySelector('#privacy').checked;
+		const newsletter = !!form.querySelector('#newsletter') && form.querySelector('#newsletter').checked;
         
         if (nome.length < 2) {
             alert('Il nome deve contenere almeno 2 caratteri');
@@ -123,22 +133,71 @@ if (form) {
             alert('Inserisci un indirizzo email valido');
             return;
         }
+		if (!telefono) {
+			alert('Inserisci un numero di telefono valido');
+			return;
+		}
+		if (!periodo) {
+			alert('Inserisci il periodo preferito');
+			return;
+		}
         
         // Show loading state
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="animate-spin">⏳</span> Invio in corso...';
         
-        // Simulate form submission (replace with actual API call)
-        setTimeout(() => {
-            // Show success message
-            const successModal = document.getElementById('success-modal');
-            if (successModal) {
-                successModal.classList.remove('hidden');
-            }
-            form.reset();
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalText;
-        }, 2000);
+		// Salva temporaneamente per personalizzare la pagina di ringraziamento
+		try {
+			sessionStorage.setItem('leadName', nome);
+			sessionStorage.setItem('leadEmail', email);
+		} catch (err) {
+			// ignore storage errors
+		}
+		
+		// Prepara i dati per n8n (FormData per evitare problemi CORS)
+		const formData = new FormData();
+		formData.append('nome', nome);
+		formData.append('email', email);
+		formData.append('telefono', telefono);
+		formData.append('whatsapp', whatsapp ? 'true' : 'false');
+		formData.append('periodo', periodo);
+		formData.append('adulti', adulti);
+		formData.append('bambini', bambini);
+		formData.append('budget', budget);
+		formData.append('note', note);
+		formData.append('privacy', privacy ? 'true' : 'false');
+		formData.append('newsletter', newsletter ? 'true' : 'false');
+		formData.append('page', window.location.href);
+		formData.append('originatedAt', new Date().toISOString());
+		formData.append('userAgent', navigator.userAgent);
+		// UTM params (se presenti)
+		try {
+			const usp = new URLSearchParams(window.location.search);
+			['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(key => {
+				if (usp.get(key)) formData.append(key, usp.get(key));
+			});
+		} catch (_) {}
+		
+		// Invia a n8n
+		fetch(webhookUrl, {
+			method: 'POST',
+			body: formData,
+			mode: 'cors'
+		})
+		.then((res) => {
+			// In alcuni setup CORS la risposta può essere 'opaque' (res.type === 'opaque')
+			if (res.ok || res.type === 'opaque') {
+				window.location.href = 'thank-you.html';
+			} else {
+				throw new Error('Risposta non valida dal server');
+			}
+		})
+		.catch((err) => {
+			console.error('Invio al webhook fallito:', err);
+			alert('Ops! Non siamo riusciti a inviare la richiesta. Riprova tra poco oppure contattaci via email/WhatsApp.');
+			submitBtn.disabled = false;
+			submitBtn.innerHTML = originalText;
+		});
     });
 }
 

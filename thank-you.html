@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Grazie per aver richiesto un preventivo personalizzato. Ti contatteremo entro 24 ore con la proposta migliore per il tuo safari in Tanzania.">
+    <title>Grazie! Richiesta inviata | Spassoso Safaris</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'safari-green': '#27ae60',
+                        'safari-green-hover': '#2d802f',
+                        'safari-orange': '#ff6900',
+                        'safari-orange-hover': '#e55a00',
+                        'safari-gold': '#fcb900',
+                        'dark-gray': '#32373c',
+                        'text-gray': '#333333',
+                        'light-gray': '#f3f4f6',
+                        'secondary-gray': '#9ca0af'
+                    },
+                    fontFamily: {
+                        'heading': ['Quicksand', 'sans-serif'],
+                        'body': ['Nunito Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Nunito Sans', sans-serif; }
+        h1, h2, h3, h4 { font-family: 'Quicksand', sans-serif; }
+    </style>
+</head>
+<body class="bg-white text-text-gray">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-safari-orange focus:text-white focus:rounded">Salta al contenuto principale</a>
+	
+	<main id="main-content" class="pt-0">
+		<section class="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Conferma richiesta">
+            <div class="absolute inset-0 z-0">
+                <img src="images/hero-2.png" alt="Leone nelle pianure del Serengeti" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/50"></div>
+            </div>
+            <div class="relative z-10 container mx-auto px-4 lg:px-8">
+                <div class="max-w-3xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl text-center">
+                    <div class="mx-auto mb-6 w-20 h-20 rounded-full bg-safari-orange/10 flex items-center justify-center">
+						<svg class="w-10 h-10 text-safari-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+						</svg>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-heading font-bold mb-4 text-text-gray">Grazie<span id="lead-name-slot"></span>! La tua richiesta è stata inviata</h1>
+                    <p class="text-lg md:text-xl font-body text-text-gray/90 mb-6">Ti contatteremo entro <span class="font-semibold text-safari-orange">24 ore</span> con un preventivo personalizzato per il tuo safari.</p>
+                    <p class="text-base font-body text-secondary-gray mb-8">Controlla la tua email<span id="lead-email-slot"></span> (anche in <span class="italic">spam</span>). Se preferisci, risponderemo anche su WhatsApp al numero indicato.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mb-8">
+                        <div class="bg-light-gray rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-2">
+                                <svg class="w-6 h-6 text-safari-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <h3 class="font-heading font-semibold text-text-gray">Cosa succede ora</h3>
+                            </div>
+                            <p class="text-sm font-body text-text-gray/90">Analizziamo preferenze e date per costruire la proposta su misura per te.</p>
+                        </div>
+                        <div class="bg-light-gray rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-2">
+                                <svg class="w-6 h-6 text-safari-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <h3 class="font-heading font-semibold text-text-gray">Risposta rapida</h3>
+                            </div>
+                            <p class="text-sm font-body text-text-gray/90">Entro 24 ore riceverai il preventivo via email (e, se richiesto, WhatsApp).</p>
+                        </div>
+                        <div class="bg-light-gray rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-2">
+                                <svg class="w-6 h-6 text-safari-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <h3 class="font-heading font-semibold text-text-gray">Zero impegno</h3>
+                            </div>
+                            <p class="text-sm font-body text-text-gray/90">La richiesta è gratuita e senza vincoli. Siamo qui per consigliarti.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                        <a href="index.html#home" class="inline-flex items-center justify-center gap-2 bg-safari-orange text-white px-8 py-4 rounded-lg font-body font-semibold text-lg hover:bg-safari-orange-hover transition-all transform hover:scale-105 shadow-lg">
+                            Torna alla home
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-6" role="contentinfo">
+        <div class="container mx-auto px-4 lg:px-8 text-center text-sm text-secondary-gray font-body">
+            <p class="flex flex-col md:flex-row items-center justify-center gap-4">
+                <a href="https://www.iubenda.com/privacy-policy/61543474" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-safari-orange transition-colors" title="Privacy Policy">Privacy Policy</a>
+                <span class="hidden md:inline">|</span>
+                <a href="https://www.iubenda.com/privacy-policy/61543474/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-safari-orange transition-colors" title="Cookie Policy">Cookie Policy</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Personalizzazione semplice con i dati temporanei salvati dalla form
+        (function () {
+            const name = sessionStorage.getItem('leadName') || '';
+            const email = sessionStorage.getItem('leadEmail') || '';
+            if (name) {
+                const slot = document.getElementById('lead-name-slot');
+                slot.textContent = `, ${name}`;
+            }
+            if (email) {
+                const slotEmail = document.getElementById('lead-email-slot');
+                slotEmail.textContent = ` (${email})`;
+            }
+            // Pulizia per privacy
+            sessionStorage.removeItem('leadName');
+            sessionStorage.removeItem('leadEmail');
+        })();
+    </script>
+    <!-- iubenda Privacy and Cookie Policy -->
+    <script type="text/javascript">
+        (function (w,d) {
+            var loader = function () {
+                var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; 
+                s.src="https://cdn.iubenda.com/iubenda.js"; 
+                tag.parentNode.insertBefore(s,tag);
+            }; 
+            if(w.addEventListener){
+                w.addEventListener("load", loader, false);
+            }else if(w.attachEvent){
+                w.attachEvent("onload", loader);
+            }else{
+                w.onload = loader;
+            }
+        })(window, document);
+    </script>
+</body>
+</html>
+
