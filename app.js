@@ -177,24 +177,21 @@ if (form) {
 			});
 		} catch (_) {}
 
-		fetch(webhookUrl, {
-			method: 'POST',
-			body: formData,
-			mode: 'cors'
-		})
-		.then((res) => {
-			if (res.ok) {
-				window.location.href = 'thank-you.html';
+		// Invia in background (non blocca il redirect) per evitare problemi CORS
+		try {
+			const params = new URLSearchParams();
+			for (const [k, v] of formData.entries()) params.append(k, v);
+			if (navigator.sendBeacon) {
+				const blob = new Blob([params.toString()], { type: 'application/x-www-form-urlencoded;charset=UTF-8' });
+				navigator.sendBeacon(webhookUrl, blob);
 			} else {
-				throw new Error(`Risposta non valida dal server: ${res.status}`);
+				fetch(webhookUrl, { method: 'POST', body: formData, mode: 'no-cors', keepalive: true }).catch(() => {});
 			}
-		})
-		.catch((err) => {
-			console.error('Invio al webhook fallito:', err);
-			alert('Ops! Non siamo riusciti a inviare la richiesta. Riprova tra poco oppure contattaci via email/WhatsApp.');
-			submitBtn.disabled = false;
-			submitBtn.innerHTML = originalText;
-		});
+		} catch (_) {
+			// non bloccare l'utente
+		}
+		// Redirect immediato alla thank-you
+		window.location.href = 'thank-you.html';
     });
 }
 
