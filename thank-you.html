@@ -124,9 +124,54 @@
                 const slotEmail = document.getElementById('lead-email-slot');
                 slotEmail.textContent = ` (${email})`;
             }
-            // Pulizia per privacy
-            sessionStorage.removeItem('leadName');
-            sessionStorage.removeItem('leadEmail');
+			// Avvia automazione: invia il payload al webhook (prima CORS, poi fallback)
+			try {
+				const payloadRaw = sessionStorage.getItem('leadPayload');
+				if (payloadRaw) {
+					const payload = JSON.parse(payloadRaw);
+					const formData = new FormData();
+					Object.entries(payload).forEach(([key, value]) => {
+						if (key === 'utm' && value && typeof value === 'object') {
+							Object.entries(value).forEach(([uk, uv]) => {
+								formData.append(uk, String(uv));
+							});
+						} else {
+							formData.append(key, String(value));
+						}
+					});
+					const webhookUrl = 'https://automations.wolfoncloud.com/webhook/501030c6-f9d3-41e9-adfb-45c8cb66cfc1';
+					
+					// Prova CORS
+					fetch(webhookUrl, { method: 'POST', body: formData, mode: 'cors', keepalive: true })
+						.then((res) => {
+							if (!res.ok) throw new Error('Bad status ' + res.status);
+						})
+						.catch(() => {
+							// Fallback: invia senza CORS (non blocca UX)
+							try {
+								// sendBeacon usa content-type specifico; se non disponibile, usa fetch no-cors
+                                const params = new URLSearchParams();
+								for (const [k, v] of formData.entries()) params.append(k, v);
+								if (navigator.sendBeacon) {
+									const blob = new Blob([params.toString()], { type: 'application/x-www-form-urlencoded;charset=UTF-8' });
+									navigator.sendBeacon(webhookUrl, blob);
+								} else {
+									fetch(webhookUrl, { method: 'POST', body: formData, mode: 'no-cors', keepalive: true });
+								}
+							} catch (_) {}
+						})
+						.finally(() => {
+							// Pulizia per privacy
+							sessionStorage.removeItem('leadPayload');
+						});
+				}
+			} catch (_) {
+				// Pulizia anche in caso di errore
+				sessionStorage.removeItem('leadPayload');
+			}
+			// Pulizia base
+			sessionStorage.removeItem('leadName');
+			sessionStorage.removeItem('leadEmail');
         })();
     </script>
     <!-- iubenda Privacy and Cookie Policy -->

@@ -154,49 +154,30 @@ if (form) {
 			// ignore storage errors
 		}
 		
-		// Prepara i dati per n8n (FormData per evitare problemi CORS)
-		const formData = new FormData();
-		formData.append('nome', nome);
-		formData.append('email', email);
-		formData.append('telefono', telefono);
-		formData.append('whatsapp', whatsapp ? 'true' : 'false');
-		formData.append('periodo', periodo);
-		formData.append('adulti', adulti);
-		formData.append('bambini', bambini);
-		formData.append('budget', budget);
-		formData.append('note', note);
-		formData.append('privacy', privacy ? 'true' : 'false');
-		formData.append('newsletter', newsletter ? 'true' : 'false');
-		formData.append('page', window.location.href);
-		formData.append('originatedAt', new Date().toISOString());
-		formData.append('userAgent', navigator.userAgent);
-		// UTM params (se presenti)
+		// Salva tutto il payload e delega l'invio al webhook alla thank-you page
 		try {
-			const usp = new URLSearchParams(window.location.search);
-			['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(key => {
-				if (usp.get(key)) formData.append(key, usp.get(key));
-			});
-		} catch (_) {}
-		
-		// Invia a n8n con CORS e reindirizza SOLO su risposta 200-299
-		fetch(webhookUrl, {
-			method: 'POST',
-			body: formData,
-			mode: 'cors'
-		})
-		.then((res) => {
-			if (res.ok) {
-				window.location.href = 'thank-you.html';
-			} else {
-				throw new Error(`Risposta non valida dal server: ${res.status}`);
-			}
-		})
-		.catch((err) => {
-			console.error('Invio al webhook fallito:', err);
-			alert('Ops! Non siamo riusciti a inviare la richiesta. Riprova tra poco oppure contattaci via email/WhatsApp.');
-			submitBtn.disabled = false;
-			submitBtn.innerHTML = originalText;
-		});
+			const utm = {};
+			try {
+				const usp = new URLSearchParams(window.location.search);
+				['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(key => {
+					if (usp.get(key)) utm[key] = usp.get(key);
+				});
+			} catch (_) {}
+			const leadPayload = {
+				nome, email, telefono, whatsapp,
+				periodo, adulti, bambini, budget, note,
+				privacy, newsletter,
+				page: window.location.href,
+				originatedAt: new Date().toISOString(),
+				userAgent: navigator.userAgent,
+				utm
+			};
+			sessionStorage.setItem('leadPayload', JSON.stringify(leadPayload));
+		} catch (err) {
+			console.error('Impossibile salvare il payload in sessionStorage:', err);
+		}
+		// Reindirizza subito: l'automazione partirà sulla thank-you
+		window.location.href = 'thank-you.html';
     });
 }
 
