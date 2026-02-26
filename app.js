@@ -178,26 +178,25 @@ if (form) {
 			});
 		} catch (_) {}
 		
-		// Invia a n8n con modalità più tollerante ai CORS e reindirizza comunque
-		try {
-			fetch(webhookUrl, {
-				method: 'POST',
-				body: formData,
-				mode: 'no-cors',
-				keepalive: true
-			}).catch((err) => {
-				// Non bloccare l'utente: logga e prosegui
-				console.error('Invio al webhook fallito (ignoro per UX):', err);
-			});
-		} catch (err) {
-			// Ignora eventuali eccezioni sincrone
-			console.error('Errore imprevisto durante l\'invio al webhook:', err);
-		}
-		
-		// Reindirizza sempre alla pagina di ringraziamento
-		setTimeout(() => {
-			window.location.href = 'thank-you.html';
-		}, 500);
+		// Invia a n8n con CORS e reindirizza SOLO su risposta 200-299
+		fetch(webhookUrl, {
+			method: 'POST',
+			body: formData,
+			mode: 'cors'
+		})
+		.then((res) => {
+			if (res.ok) {
+				window.location.href = 'thank-you.html';
+			} else {
+				throw new Error(`Risposta non valida dal server: ${res.status}`);
+			}
+		})
+		.catch((err) => {
+			console.error('Invio al webhook fallito:', err);
+			alert('Ops! Non siamo riusciti a inviare la richiesta. Riprova tra poco oppure contattaci via email/WhatsApp.');
+			submitBtn.disabled = false;
+			submitBtn.innerHTML = originalText;
+		});
     });
 }
 
