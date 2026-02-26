@@ -177,20 +177,29 @@ if (form) {
 			});
 		} catch (_) {}
 
-		// Invia in background (non blocca il redirect) per evitare problemi CORS
+		// Invio resiliente: prova CORS ma non bloccare; garantisci invio con sendBeacon/no-cors e reindirizza sempre
 		try {
+			// Prova CORS (non blocca il flusso né mostra alert)
+			fetch(webhookUrl, { method: 'POST', body: formData, mode: 'cors', keepalive: true })
+				.catch((err) => console.warn('CORS webhook error (non bloccante):', err));
+		} catch (err) {
+			console.warn('Fetch CORS non riuscito (non bloccante):', err);
+		}
+		try {
+			// Garantisce l'invio anche durante l'unload della pagina
 			const params = new URLSearchParams();
 			for (const [k, v] of formData.entries()) params.append(k, v);
-			if (navigator.sendBeacon) {
-				const blob = new Blob([params.toString()], { type: 'application/x-www-form-urlencoded;charset=UTF-8' });
-				navigator.sendBeacon(webhookUrl, blob);
-			} else {
+			const beaconOk = navigator.sendBeacon
+				? navigator.sendBeacon(webhookUrl, new Blob([params.toString()], { type: 'application/x-www-form-urlencoded;charset=UTF-8' }))
+				: false;
+			if (!beaconOk) {
+				// Fallback finale no-cors
 				fetch(webhookUrl, { method: 'POST', body: formData, mode: 'no-cors', keepalive: true }).catch(() => {});
 			}
 		} catch (_) {
-			// non bloccare l'utente
+			// ignora eventuali errori, abbiamo già provato a inviare
 		}
-		// Redirect immediato alla thank-you
+		// Redirect immediato alla pagina di ringraziamento per UX coerente
 		window.location.href = 'thank-you.html';
     });
 }
